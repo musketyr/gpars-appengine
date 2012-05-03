@@ -2,3 +2,7 @@
 /.project
 /.settings
 /bin
+*.class
+*.jar
+*.war
+*.ear
