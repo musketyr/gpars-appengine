@@ -1,5 +1,6 @@
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 def compatibilityVersion = 1.6
 sourceCompatibility = compatibilityVersion
@@ -13,6 +14,10 @@ repositories {
     mavenRepo(name: 'codehaus-snapshots', url: 'http://snapshots.repository.codehaus.org/')
 }
 
+configurations {
+    deployerJars
+}
+
 
 dependencies {
     def gaeVersion = '1.6.5'
@@ -20,5 +25,32 @@ dependencies {
     compile "com.google.appengine:appengine-api-labs:$gaeVersion"
     compile 'org.codehaus.gpars:gpars:1.0-SNAPSHOT'
     compile 'org.codehaus.groovy:groovy-all:1.8.6'
+    deployerJars "org.apache.maven.wagon:wagon-http-lightweight:2.0"
+}
+
+uploadArchives {
+    project.ext.deployer = repositories.mavenDeployer {
+        uniqueVersion = false
+        configuration = configurations.deployerJars
+        repository(url: 'https://dav.codehaus.org/repository/gpars/') {
+            authentication(userName: codehausUsername, password: codehausPassword)
+        }
+        snapshotRepository(url: 'https://dav.codehaus.org/snapshots.repository/gpars/') {
+            authentication(userName: codehausUsername, password: codehausPassword)
+        }
+        pom.project {
+            name 'GPars App Engine integration'
+            description 'Enables GPars on GAE'
+            url 'http://gpars.codehaus.org'
+            inceptionYear '2012'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }
 }
 
