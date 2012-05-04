@@ -25,6 +25,8 @@ dependencies {
     compile "com.google.appengine:appengine-api-labs:$gaeVersion"
     compile 'org.codehaus.gpars:gpars:1.0-SNAPSHOT'
     compile 'org.codehaus.groovy:groovy-all:1.8.6'
+    //todo needs a real gaelyk dependency
+    //compile 'gaelyk...'
     deployerJars "org.apache.maven.wagon:wagon-http-lightweight:2.0"
 }
 
@@ -51,6 +53,18 @@ uploadArchives {
                 }
             }
         }
+        // In the future Gradle will allow to use dynamic props for dependencies to deal with optionals
+        pom.whenConfigured {pom ->
+            // dependency is a native Maven dependency object (With properties artifactId, groupId, ...)
+            pom.dependencies.each {dependency ->
+                if (dependency.artifactId in ['gaelyk']) {  //todo perhaps needs to be verified against the real name of the dependency
+                    dependency.optional = true
+                }
+            }
+            // Remove test dependencies from all poms
+            pom.dependencies.removeAll(pom.dependencies.findAll { it.scope == 'test' })
+        }
+
     }
 }
 
