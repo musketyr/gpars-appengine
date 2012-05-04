@@ -130,6 +130,8 @@ withPGroup { group ->
 
 # Integration
 
+## Maven
+
 The GPars App Engine library can be obtained from maven using the following descriptor:
 ```xml
         <dependency>
@@ -157,3 +159,29 @@ They both sit in the Codehaus snapshot repositories, but GA releases will eventu
             <layout>default</layout>
         </repository>
 ```
+
+## Gradle
+
+You can also use the snapshots repositories in your Gradle build. You only need to specify the repositories
+and dependencies in particular sections.
+
+
+```groovy
+repositories {
+    mavenRepo name: 'codehaus-snapshots', url: 'http://snapshots.repository.codehaus.org/'
+    // if you want Gaelyk integration
+    // mavenRepo name: 'sonatype-snapshots', url: 'https://oss.sonatype.org/content/repositories/snapshots'
+}
+
+dependencies {
+    compile 'org.codehaus.gpars:gpars-appengine:0.1-SNAPSHOT', {
+       // if you don't want Gaelyk integration
+       exclude group: 'org.gaelyk', module: 'gaelyk'
+    }
+    
+    // if you want Gaelyk integration
+    // compile 'org.gaelyk:gaelyk:1.2-SNAPSHOT'
+}
+
+```
+
