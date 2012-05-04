@@ -16,6 +16,7 @@
 
 package groovyx.gpars.appengine;
 
+import com.google.appengine.api.ThreadManager;
 import groovy.lang.Closure;
 import groovyx.gpars.GParsConfig;
 import groovyx.gpars.GParsExecutorsPool;
@@ -29,8 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import com.google.appengine.api.ThreadManager;
 
 /**
  * 
@@ -112,7 +111,7 @@ public class AppEnginePool {
      * @return new instance of {@link Pool} using App Engine specific logic
      */
     static Pool getPool(int poolSize) {
-        return new DefaultPool(getExecutor());
+        return new DefaultPool(getExecutor(poolSize));
     }
 
     /**
