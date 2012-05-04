@@ -42,7 +42,7 @@ actor << 'Hi'
 
 # Gaelyk Integration
 
-GPars App Engine is Gaelyk 1.2+ compliant binary plugin. As soon as it is present on the classpath it configures 
+GPars App Engine is [Gaelyk](http://gaelyk.appengine.com) 1.2+ compliant binary plugin. As soon as it is present on the classpath it configures 
 [GPars](http://gpars.codehaus.org/) automatically so there is no need to call `AppEnginePool.install()` manually.
 
 It adds two following new methods to each [groovlet and template](http://gaelyk.appspot.com/tutorial/views-and-controllers)
