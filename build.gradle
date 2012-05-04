@@ -1,5 +1,5 @@
 
-apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'maven'
 
 def compatibilityVersion = 1.6
@@ -11,7 +11,8 @@ group = 'org.codehaus.gpars'
 
 repositories {
     mavenCentral()
-    mavenRepo(name: 'codehaus-snapshots', url: 'http://snapshots.repository.codehaus.org/')
+    mavenRepo name: 'sonatype-snapshots', url: 'https://oss.sonatype.org/content/repositories/snapshots'
+    mavenRepo name: 'codehaus-snapshots', url: 'http://snapshots.repository.codehaus.org/'
 }
 
 configurations {
@@ -21,12 +22,11 @@ configurations {
 
 dependencies {
     def gaeVersion = '1.6.5'
+    groovy 'org.codehaus.groovy:groovy-all:1.8.6'
     compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
     compile "com.google.appengine:appengine-api-labs:$gaeVersion"
     compile 'org.codehaus.gpars:gpars:1.0-SNAPSHOT'
-    compile 'org.codehaus.groovy:groovy-all:1.8.6'
-    //todo needs a real gaelyk dependency
-    //compile 'gaelyk...'
+    compile 'org.gaelyk:gaelyk:1.2-SNAPSHOT'
     deployerJars "org.apache.maven.wagon:wagon-http-lightweight:2.0"
 }
 
