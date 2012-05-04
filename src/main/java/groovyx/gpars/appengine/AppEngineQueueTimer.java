@@ -34,7 +34,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
  * @author <a href="mailto:vladimir.orany@appsatori.eu">Vladimir Orany</a>
  * 
  */
-public enum AppEngineQueueTimer implements GeneralTimer {
+enum AppEngineQueueTimer implements GeneralTimer {
 
     /**
      * The single instance of this {@link GeneralTimer}.

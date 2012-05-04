@@ -28,7 +28,7 @@ import groovyx.gpars.util.PoolFactory;
  * @author <a href="mailto:vladimir.orany@appsatori.eu">Vladimir Orany</a>
  * 
  */
-public enum AppEnginePoolFactory implements PoolFactory {
+enum AppEnginePoolFactory implements PoolFactory {
 
     /**
      * The single instance of this {@link PoolFactory}.

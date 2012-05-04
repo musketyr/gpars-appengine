@@ -31,7 +31,7 @@ import com.google.appengine.api.taskqueue.DeferredTask;
  * 
  */
 @SuppressWarnings("serial")
-public final class DeferredTimerTask implements DeferredTask {
+final class DeferredTimerTask implements DeferredTask {
     private final TimerTask task;
 
     /**

@@ -33,7 +33,7 @@ import com.google.appengine.api.backends.BackendServiceFactory;
  * @author <a href="mailto:vladimir.orany@appsatori.eu">Vladimir Orany</a>
  * 
  */
-public enum AppEngineThreadFactory implements ThreadFactory {
+enum AppEngineThreadFactory implements ThreadFactory {
     /**
      * The single instance of this {@link ThreadFactory}.
      */

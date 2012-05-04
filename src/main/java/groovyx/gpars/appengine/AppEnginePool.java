@@ -17,7 +17,9 @@
 package groovyx.gpars.appengine;
 
 import groovy.lang.Closure;
+import groovyx.gpars.GParsConfig;
 import groovyx.gpars.GParsExecutorsPool;
+import groovyx.gpars.dataflow.DataflowVariable;
 import groovyx.gpars.group.DefaultPGroup;
 import groovyx.gpars.group.PGroup;
 import groovyx.gpars.scheduler.DefaultPool;
@@ -57,7 +59,20 @@ public class AppEnginePool {
 
     private static final int DEFAULT_POOL_SIZE = 10;
 
-    private AppEnginePool() {
+    private AppEnginePool() {}
+    
+    /**
+     * Sets up all necessary factories for {@link GParsConfig}.
+     * 
+     * This method must be called prior any other method of this class or 
+     * any other GPars feature such as {@link DataflowVariable}.<br/>
+     * 
+     * Ideally, call this method in the of your application initializer.
+     * 
+     */
+    public static void install(){
+        GParsConfig.setPoolFactory(AppEnginePoolFactory.INSTANCE);
+        GParsConfig.setTimerFactory(AppEngineQueueTimerFactory.INSTANCE);
     }
 
     /**
@@ -71,7 +86,7 @@ public class AppEnginePool {
      * @return new instance of {@link ExecutorService} using App Engine specific
      *         logic
      */
-    public static ThreadPoolExecutor getExecutor(int poolSize) {
+    private static ThreadPoolExecutor getExecutor(int poolSize) {
         return new ThreadPoolExecutor(0, poolSize, 500, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(), AppEngineThreadFactory.INSTANCE);
     }
 
@@ -83,7 +98,7 @@ public class AppEnginePool {
      * @return new instance of {@link ExecutorService} using App Engine specific
      *         logic
      */
-    public static ThreadPoolExecutor getExecutor() {
+    private static ThreadPoolExecutor getExecutor() {
         return getExecutor(DEFAULT_POOL_SIZE);
     }
 
@@ -96,7 +111,7 @@ public class AppEnginePool {
      *            threads per request on frontend instance.
      * @return new instance of {@link Pool} using App Engine specific logic
      */
-    public static Pool getPool(int poolSize) {
+    static Pool getPool(int poolSize) {
         return new DefaultPool(getExecutor());
     }
 
@@ -106,7 +121,7 @@ public class AppEnginePool {
      * 
      * @return new instance of {@link Pool} using App Engine specific logic
      */
-    public static Pool getPool() {
+    static Pool getPool() {
         return getPool(DEFAULT_POOL_SIZE);
     }
 

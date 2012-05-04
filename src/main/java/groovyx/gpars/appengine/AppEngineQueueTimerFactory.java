@@ -28,7 +28,7 @@ import groovyx.gpars.util.TimerFactory;
  * @author <a href="mailto:vladimir.orany@appsatori.eu">Vladimir Orany</a>
  * 
  */
-public enum AppEngineQueueTimerFactory implements TimerFactory {
+enum AppEngineQueueTimerFactory implements TimerFactory {
 
     /**
      * The single instance of this {@link TimerFactory}.
