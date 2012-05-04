@@ -11,6 +11,54 @@ which aim at making concurrent programming easy and intuitive, will now run seam
 
 GPars App Engine integrates well with both Groovy and Java applications and can also be used as a [Gaelyk](http://gaelyk.appengine.com) plugin.
 
+
+# Example
+
+The following example illustrates a simple GPars actor use:
+
+```groovy
+ import groovyx.gpars.actor.DynamicDispatchActor
+
+ /**
+  * Demonstrates use of the DynamicDispatchActor class, which leverages Groovy dynamic method dispatch to invoke
+  * the appropriate onMessage() method.
+  */
+
+ final class MyActor extends DynamicDispatchActor {
+
+     def MyActor(final closure) { become(closure); }
+
+     void onMessage(String message) {
+         println 'Received string'
+     }
+
+     void onMessage(Integer message) {
+         println 'Received integer'
+     }
+
+     void onMessage(Object message) {
+         println 'Received object'
+     }
+
+     void onMessage(List message) {
+         println 'Received list'
+         stop()
+     }
+ }
+
+ final def actor = new MyActor({
+     when {BigDecimal num -> println 'Received BigDecimal'}
+ }).start()
+
+ actor 1
+ actor ''
+ actor 1.0
+ actor([1, 2, 3, 4, 5])
+
+ actor.join()
+```
+
+
 # Installation
 
 Before you use any of the [GPars](http://gpars.codehaus.org/) features in your code inside [Google App Engine](https://developers.google.com/appengine/),
@@ -32,8 +80,8 @@ groovyx.gpars.appengine.AppEnginePool.withPool {
 
 # Parallel Groups and Actors
 
-To obtain parallel group (`PGroup`) just call `AppEnginePool.getPGroup()`. You can than for example do some work with
-actors.
+To create a new parallel group (`PGroup`) just call `AppEnginePool.getPGroup()` with the optional _poolSize_ argument.
+You can than for example do some work with actors.
 
 ```groovy
 def group = groovyx.gpars.appengine.AppEnginePool.getPGroup()
@@ -41,6 +89,8 @@ final actor = group.actor { loop { react { msg -> report 'Actor printing: ' + ms
 actor << 'Hi'
 [1, 2, 3, 4, 5, 6, 7, 8, 9].each {actor << it}
 ```
+
+Please bear in mind that GAE-specific restrictions may apply to the number of threads your application creates.
 
 # Other concepts
 
@@ -50,7 +100,7 @@ Please refer to the [GPars documentation](http://gpars.codehaus.org) and [the us
 # Gaelyk Integration
 
 GPars App Engine is also a [Gaelyk](http://gaelyk.appengine.com) 1.2+ compliant binary plugin. As soon as it is present on the classpath
-og your Gaelyk application, it will configure [GPars](http://gpars.codehaus.org/) for GAE automatically and so there is no need to call
+of your Gaelyk application, it will configure [GPars](http://gpars.codehaus.org/) for GAE automatically and so there is no need to call
 `AppEnginePool.install()` manually.
 
 Additionally, the plugin adds the two following new methods to each [groovlet and template](http://gaelyk.appspot.com/tutorial/views-and-controllers)
