@@ -23,31 +23,35 @@ The following example illustrates a simple GPars actor use:
   * Demonstrates use of the DynamicDispatchActor class, which leverages Groovy dynamic method dispatch to invoke
   * the appropriate onMessage() method.
   */
-
  final class MyActor extends DynamicDispatchActor {
 
-     def MyActor(final closure) { become(closure); }
+     def out
+
+     def MyActor(out, final closure) {
+         this.out = out
+         become(closure)
+     }
 
      void onMessage(String message) {
-         println 'Received string'
+         out << 'Received string'
      }
 
      void onMessage(Integer message) {
-         println 'Received integer'
+         out << 'Received integer'
      }
 
      void onMessage(Object message) {
-         println 'Received object'
+         out << 'Received object'
      }
 
      void onMessage(List message) {
-         println 'Received list'
+         out << 'Received list'
          stop()
      }
  }
 
- final def actor = new MyActor({
-     when {BigDecimal num -> println 'Received BigDecimal'}
+ final def actor = new MyActor(report, {
+     when {BigDecimal num -> out << 'Received BigDecimal'}
  }).start()
 
  actor 1
