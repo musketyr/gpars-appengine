@@ -3,28 +3,30 @@ GPars App Engine
 
 [GPars](http://gpars.codehaus.org/) support for [Google App Engine](https://developers.google.com/appengine/).
 
+# Introduction
+
+This little handy library allows you to use most of the [GPars](http://gpars.codehaus.org/) concurrency functionality
+on the Google App Engine. High-level concurrency concepts, such as actors, parallel Groovy collections, agents and dataflow,
+which aim at making concurrent programming easy and intuitive, will now run seamlessly on top of the Google App Engine services
+
+GPars App Engine integrates well with both Groovy and Java applications and can also be used as a [Gaelyk](http://gaelyk.appengine.com) plugin.
+
 # Installation
 
-Before you use any [GPars](http://gpars.codehaus.org/) feature on [Google App Engine](https://developers.google.com/appengine/) 
-you need to call `AppEnginePool.install()` which will configure [GPars](http://gpars.codehaus.org/) properly.
-The call is needed only once for instace so you should put it somewhere into application initializer.
-
+Before you use any of the [GPars](http://gpars.codehaus.org/) features in your code inside [Google App Engine](https://developers.google.com/appengine/),
+you need to call `AppEnginePool.install()`, which will configure [GPars](http://gpars.codehaus.org/) properly for GAE.
+The initialization call is necessary in order to hook-in the GAE services underneath GPars and is only required once for a running application instance.
+A good strategy is to put the initialization call somewhere into the application initializer.
 
 # Parallel Collections
 
 To enable [concurrent collection processing](http://gpars.codehaus.org/Parallelizer) 
 use `AppEnginePool.withPool(Closure)` method instead of `GParsPool.withPool(Closure)`.
-Then you can run any [GPars](http://gpars.codehaus.org/) code as usual. For example following one:
+Then you can run any [GPars](http://gpars.codehaus.org/) code as usual. For example:
 
 ```groovy
-AppEnginePool.withPool {
+groovyx.gpars.appengine.AppEnginePool.withPool {
     def selfPortraits = images.findAllParallel{it.contains me}.collectParallel {it.resize() }
-
-    //a map-reduce functional style
-    def smallestSelfPortrait = images.parallel
-        .filter{it.contains me}
-        .map{it.resize()}
-        .min{it.sizeInMB}
 }
 ```
 
@@ -34,22 +36,28 @@ To obtain parallel group (`PGroup`) just call `AppEnginePool.getPGroup()`. You c
 actors.
 
 ```groovy
-def group = AppEnginePool.getPGroup()
+def group = groovyx.gpars.appengine.AppEnginePool.getPGroup()
 final actor = group.actor { loop { react { msg -> report 'Actor printing: ' + msg } } }
 actor << 'Hi'
 [1, 2, 3, 4, 5, 6, 7, 8, 9].each {actor << it}
 ```
 
+# Other concepts
+
+Please refer to the [GPars documentation](http://gpars.codehaus.org) and [the user guide](http://gpars.org/SNAPSHOT/guide/index.html)
+ for details on the individual concurrency concepts and examples of their use.
+
 # Gaelyk Integration
 
-GPars App Engine is [Gaelyk](http://gaelyk.appengine.com) 1.2+ compliant binary plugin. As soon as it is present on the classpath it configures 
-[GPars](http://gpars.codehaus.org/) automatically so there is no need to call `AppEnginePool.install()` manually.
+GPars App Engine is also a [Gaelyk](http://gaelyk.appengine.com) 1.2+ compliant binary plugin. As soon as it is present on the classpath
+og your Gaelyk application, it will configure [GPars](http://gpars.codehaus.org/) for GAE automatically and so there is no need to call
+`AppEnginePool.install()` manually.
 
-It adds two following new methods to each [groovlet and template](http://gaelyk.appspot.com/tutorial/views-and-controllers)
+Additionally, the plugin adds the two following new methods to each [groovlet and template](http://gaelyk.appspot.com/tutorial/views-and-controllers)
 
 ## `withPool`
 
-Shortcut for `AppEnginePool.withPool(Closure)`. 
+A shorthand for `AppEnginePool.withPool(Closure)`.
 
 ```groovy
 withPool {
@@ -59,7 +67,7 @@ withPool {
 
 ## `withPGroup`
 
-Shortcut for `AppEnginePool.getPGroup()`. Runs closure with `PGroup`. 
+A shorthand for `AppEnginePool.getPGroup()`. Runs the supplied closure with a `PGroup`.
 
 ```groovy
 withPGroup { group ->
@@ -70,3 +78,32 @@ withPGroup { group ->
 ```
 
 
+# Integration
+
+The GPars App Engine library can be obtained from maven using the following descriptor:
+```xml
+        <dependency>
+            <groupId>org.codehaus.gpars</groupId>
+            <artifactId>gpars-appengine</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+```
+
+To save you from looking up the GPars library itself, you can get it as:
+```xml
+        <dependency>
+            <groupId>org.codehaus.gpars</groupId>
+            <artifactId>gpars</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+```
+
+They both sit in the Codehaus snapshot repositories, but GA releases will eventually get into maven central:
+```xml
+        <repository>
+            <id>codehausSnapshots</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <layout>default</layout>
+        </repository>
+```
