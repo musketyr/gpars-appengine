@@ -70,8 +70,12 @@ public class AppEnginePool {
      * 
      */
     public static void install(){
-        GParsConfig.setPoolFactory(AppEnginePoolFactory.INSTANCE);
-        GParsConfig.setTimerFactory(AppEngineQueueTimerFactory.INSTANCE);
+        if(GParsConfig.getPoolFactory() != null){
+            GParsConfig.setPoolFactory(AppEnginePoolFactory.INSTANCE);            
+        }
+        if(GParsConfig.getTimerFactory() != null){
+            GParsConfig.setTimerFactory(AppEngineQueueTimerFactory.INSTANCE);            
+        }
     }
 
     /**
