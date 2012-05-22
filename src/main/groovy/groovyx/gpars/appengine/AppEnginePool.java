@@ -87,7 +87,11 @@ public class AppEnginePool {
      *         logic
      */
     private static ThreadPoolExecutor getExecutor(final int poolSize) {
-        return new ThreadPoolExecutor(poolSize, poolSize, 500, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(), AppEngineThreadFactory.INSTANCE);
+        return new ThreadPoolExecutor(poolSize, poolSize, 500, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(), AppEngineThreadFactory.INSTANCE, new RejectedExecutionHandler() {
+            @Override public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
+                throw new RejectedExecutionException("The fixed-size GAE thread pool cannot execute the provided task. " + r);
+            }
+        });
     }
 
     /**
