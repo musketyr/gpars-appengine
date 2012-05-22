@@ -12,6 +12,7 @@ repositories {
     mavenCentral()
     mavenRepo name: 'sonatype-snapshots', url: 'https://oss.sonatype.org/content/repositories/snapshots'
     mavenRepo name: 'codehaus-snapshots', url: 'http://snapshots.repository.codehaus.org/'
+    mavenRepo name: 'codehaus', url: 'http://repository.codehaus.org/'
 }
 
 configurations {
