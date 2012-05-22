@@ -26,11 +26,7 @@ import groovyx.gpars.group.PGroup;
 import groovyx.gpars.scheduler.DefaultPool;
 import groovyx.gpars.scheduler.Pool;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 
@@ -103,7 +99,7 @@ public class AppEnginePool {
      *         logic
      */
     private static ThreadPoolExecutor getExecutor() {
-        return new ThreadPoolExecutor(0, DEFAULT_POOL_SIZE, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.CallerRunsPolicy());
+        return new ThreadPoolExecutor(0, DEFAULT_POOL_SIZE, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.AbortPolicy());
     }
 
     /**
