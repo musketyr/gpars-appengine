@@ -28,6 +28,7 @@ import groovyx.gpars.scheduler.Pool;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -70,10 +71,10 @@ public class AppEnginePool {
      * 
      */
     public static void install(){
-        if(GParsConfig.getPoolFactory() != null){
+        if(GParsConfig.getPoolFactory() == null){
             GParsConfig.setPoolFactory(AppEnginePoolFactory.INSTANCE);            
         }
-        if(GParsConfig.getTimerFactory() != null){
+        if(GParsConfig.getTimerFactory() == null){
             GParsConfig.setTimerFactory(AppEngineQueueTimerFactory.INSTANCE);            
         }
     }
@@ -90,7 +91,7 @@ public class AppEnginePool {
      *         logic
      */
     private static ThreadPoolExecutor getExecutor(int poolSize) {
-        return new ThreadPoolExecutor(0, poolSize, 500, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(), AppEngineThreadFactory.INSTANCE);
+        return new ThreadPoolExecutor(0, poolSize, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**
