@@ -90,12 +90,12 @@ public class AppEnginePool {
      * @return new instance of {@link ExecutorService} using App Engine specific
      *         logic
      */
-    private static ThreadPoolExecutor getExecutor(int poolSize) {
-        return new ThreadPoolExecutor(0, poolSize, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.CallerRunsPolicy());
+    private static ThreadPoolExecutor getExecutor(final int poolSize) {
+        return new ThreadPoolExecutor(poolSize, poolSize, 500, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(), AppEngineThreadFactory.INSTANCE);
     }
 
     /**
-     * Creates new {@link ExecutorService} with default size which can be used
+     * Creates new resizeable {@link ExecutorService} with default size which can be used
      * in {@link GParsExecutorsPool#withExistingPool(ExecutorService, Closure)}
      * methods or just for executing {@link Runnable} classes.
      * 
@@ -103,7 +103,7 @@ public class AppEnginePool {
      *         logic
      */
     private static ThreadPoolExecutor getExecutor() {
-        return getExecutor(DEFAULT_POOL_SIZE);
+        return new ThreadPoolExecutor(0, DEFAULT_POOL_SIZE, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**
@@ -115,7 +115,7 @@ public class AppEnginePool {
      *            threads per request on frontend instance.
      * @return new instance of {@link Pool} using App Engine specific logic
      */
-    static Pool getPool(int poolSize) {
+    static Pool getPool(final int poolSize) {
         return new DefaultPool(getExecutor(poolSize));
     }
 
@@ -126,7 +126,7 @@ public class AppEnginePool {
      * @return new instance of {@link Pool} using App Engine specific logic
      */
     static Pool getPool() {
-        return getPool(DEFAULT_POOL_SIZE);
+        return new DefaultPool(getExecutor());
     }
 
     /**
@@ -157,7 +157,7 @@ public class AppEnginePool {
      *            The block of code to invoke with the DSL enabled
      */
     @SuppressWarnings("unchecked")
-    public static <V> V withPool(int numberOfThreads, Closure<V> cl) {
+    public static <V> V withPool(final int numberOfThreads, final Closure<V> cl) {
         return (V) GParsExecutorsPool.withExistingPool(getExecutor(numberOfThreads), cl);
     }
 
@@ -187,7 +187,7 @@ public class AppEnginePool {
      *            The block of code to invoke with the DSL enabled
      */
     @SuppressWarnings("unchecked")
-    public static <V> V withPool(Closure<V> cl) {
+    public static <V> V withPool(final Closure<V> cl) {
         return (V) GParsExecutorsPool.withExistingPool(getExecutor(), cl);
     }
 
@@ -202,7 +202,7 @@ public class AppEnginePool {
      *         logic
      * @see PGroup
      */
-    public static PGroup getPGroup(int poolSize) {
+    public static PGroup getPGroup(final int poolSize) {
         return new DefaultPGroup(getPool(poolSize));
     }
 
