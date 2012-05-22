@@ -99,7 +99,11 @@ public class AppEnginePool {
      *         logic
      */
     private static ThreadPoolExecutor getExecutor() {
-        return new ThreadPoolExecutor(0, DEFAULT_POOL_SIZE, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new ThreadPoolExecutor.AbortPolicy());
+        return new ThreadPoolExecutor(0, DEFAULT_POOL_SIZE, 500, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), AppEngineThreadFactory.INSTANCE, new RejectedExecutionHandler() {
+            @Override public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
+                throw new RejectedExecutionException("Attempt to grow the thread pool beyond the limits imposed by the GAE. Try using a fixed-size thread pool or PGroup instead of the default resizeable one.");
+            }
+        });
     }
 
     /**
