@@ -150,7 +150,7 @@ To save you from looking up the GPars library itself, you can get it as:
         <dependency>
             <groupId>org.codehaus.gpars</groupId>
             <artifactId>gpars</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-beta-2</version>
         </dependency>
 ```
 
@@ -182,7 +182,9 @@ dependencies {
        // if you don't want Gaelyk integration
        exclude group: 'org.gaelyk', module: 'gaelyk'
     }
-    
+
+    compile 'org.codehaus.gpars:gpars:1.0-beta-2'
+
     // if you want Gaelyk integration
     // compile 'org.gaelyk:gaelyk:1.2-SNAPSHOT'
 }
