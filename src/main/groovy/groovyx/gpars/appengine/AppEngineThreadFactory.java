@@ -17,6 +17,7 @@
 package groovyx.gpars.appengine;
 
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.backends.BackendService;
@@ -34,21 +35,28 @@ import com.google.appengine.api.backends.BackendServiceFactory;
  * 
  */
 enum AppEngineThreadFactory implements ThreadFactory {
+    
+    
     /**
      * The single instance of this {@link ThreadFactory}.
      */
     INSTANCE;
 
+    private static final Logger log = Logger.getLogger(AppEngineThreadFactory.class.getName());
+
     @Override
     public Thread newThread(Runnable r) {
-        if (BackendServiceFactory.getBackendService().getCurrentBackend() == null) {
-            try {
-                return ThreadManager.currentRequestThreadFactory().newThread(r);
-            } catch (IllegalStateException ies) {
-                return null;
+        try {
+            log.fine("New thread requested to run  " + r.getClass().getName());
+            if (BackendServiceFactory.getBackendService().getCurrentBackend() == null) {
+                    return ThreadManager.currentRequestThreadFactory().newThread(r);
             }
+            return ThreadManager.backgroundThreadFactory().newThread(r);
+        } catch (Throwable ies) {
+            log.info("Got " + ies.getClass().getName() + ": " + ies.getMessage());
+            return null;
         }
-        return ThreadManager.backgroundThreadFactory().newThread(r);
+        
     }
 
 }
